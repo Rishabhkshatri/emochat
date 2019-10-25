@@ -14,7 +14,7 @@ const emochat_comp = {
 };
 
 // Server Link
-const link = 'https://emochatapi.herokuapp.com/';
+const link = 'https://emochatapi.herokuapp.com';
 const socket = socketIOClient(link+'/');
 // App Css
 
