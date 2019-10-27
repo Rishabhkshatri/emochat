@@ -15,7 +15,8 @@ class Registration extends React.Component{
 		}
 	}
 
-	registerEvent(){
+	registerEvent(event){
+		event.preventDefault();
 		let is_valid = true;
 		if(this.state.user.length === 0){
 			document.getElementById('err_msg').innerText = 'Incorrect User Name';
@@ -94,6 +95,7 @@ function RegisterContent(props) {
 	return (
 		<div className="pageContent">
 			<h3>Register</h3>
+			<form onSubmit={props.registerEvent}>
 			<table className="normTable">
 				<tbody>
 					<tr>
@@ -114,14 +116,13 @@ function RegisterContent(props) {
 					</tr>
 
 					<tr>
-						<td><button onClick={props.registerEvent}> Register </button></td>
+						<td><input type="submit" value="Register" /></td>
 						<td><span onClick={props.logPageEvent}> LogIn </span></td>
-					</tr>
-					<tr>
-						<td><span id="err_msg"></span></td>
 					</tr>
 				</tbody>
 			</table>
+			</form>
+			<span id="err_msg"></span>
 		</div>
 	)
 }

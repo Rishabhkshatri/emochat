@@ -22,7 +22,8 @@ class LogIn extends React.Component{
 		this.setState(obj);
 	}
 
-	logInEvent() {
+	logInEvent(event) {
+		event.preventDefault();
 		let req_data = {
 			route : '/',
 			method : 'POST',
@@ -56,6 +57,7 @@ function LogInContent(props) {
 	return (
 		<div className="pageContent">
 			<h3>LogIn</h3>
+			<form onSubmit={props.logInEvent}>
 			<table className="normTable">
 				<tbody>
 					<tr>
@@ -67,14 +69,13 @@ function LogInContent(props) {
 						<td><input type="password" id="password" value={props.elem_val.password} onChange={props.onChange} /></td>
 					</tr>
 					<tr>
-						<td><span id="err_msg">{props.elem_val.err_msg}</span></td>
-					</tr>
-					<tr>
-						<td><button onClick={props.logInEvent}> LogIn </button></td>
+						<td><input type='submit' value='LogIn' /></td>
 						<td><span onClick={props.register}> Register </span></td>
 					</tr>
 				</tbody>
 			</table>
+			</form>
+			<span id="err_msg">{props.elem_val.err_msg}</span>
 		</div>
 	)
 }

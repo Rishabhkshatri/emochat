@@ -2,7 +2,8 @@ import React from 'react';
 import serverCall from './ServerCall';
 import {socket, link} from './config';
 import emojisList from 'emojis-list';
-var emoji_ind = {"analytical":1569,"joy":1639,"sadness":1664,"anger":1661};
+import Icon from '@material-ui/core/Icon';
+var emoji_ind = {"confident":1569,"analytical":1569,"joy":1639,"sadness":1664,"anger":1661};
 
 class Chat extends React.Component{
 	constructor(props) {
@@ -35,7 +36,15 @@ class Chat extends React.Component{
 			if((parseInt(msg_obj.r_user_id) === parseInt(this.state.r_user_id) && parseInt(msg_obj.s_user_id) === parseInt(this.cur_user.user_id))
 			 || (parseInt(msg_obj.s_user_id) === parseInt(this.state.r_user_id) && parseInt(msg_obj.r_user_id) === parseInt(this.cur_user.user_id))){
 				let pre_chat = this.state.pre_chat;
-				pre_chat.push(msg_obj);
+				let chat_update = false;
+				for(let prop in pre_chat){
+					if(pre_chat[prop]['chat_id'] === msg_obj['chat_id']){
+						chat_update = true;
+						pre_chat[prop]['message_tone'] = msg_obj['message_tone'];
+					}
+				}
+				if(!chat_update)
+					pre_chat.push(msg_obj);
 				this.setState({pre_chat : pre_chat});
 			}
 		});
@@ -154,7 +163,9 @@ function UserContent(props) {
 	}
 
 	return (<div className="chatListDiv">
-				<h3 className="chatListH3">Active Users</h3>
+				<div className="chatHead">
+					<h3 className="chatListH3">Active Users</h3>
+				</div>
 					{user_list}
 			</div>);
 }
@@ -164,8 +175,10 @@ function ChatDetail(props) {
 	if(props.pre_chat.length !== 0){
 		chat_list = props.pre_chat.map((chat_obj)=>{
 			let emoji = emojisList[1645];
-			if(emoji_ind[chat_obj['message_tone']] !== undefined){
+			if(chat_obj['message_tone'] !== undefined && emoji_ind[chat_obj['message_tone']] !== undefined){
 				emoji = emojisList[emoji_ind[chat_obj['message_tone']]];
+			}else if(chat_obj['message_tone'] === undefined){
+				emoji = "...";
 			}
 			if(chat_obj['s_user_id'] === props.cur_user['user_id'])
 				return <li className="chatList rightList" key={chat_obj['chat_id']}>{chat_obj['message']+"	"+emoji}</li>
@@ -177,16 +190,18 @@ function ChatDetail(props) {
 	return (<div>
 				<div className="chatListDiv">
 					<div className="chatHead">
-						<button className="backBtn" onClick={props.backUserList}>Back</button>
+						<span className="backBtn" onClick={props.backUserList}><Icon>arrow_back</Icon></span>
 						<h3 className="chatH3">Chats</h3>
 					</div>
-					<ul className="chatListUl">{chat_list}</ul>
+					<div className="chatListPanel">
+						<ul className="chatListUl">{chat_list}</ul>
+					</div>
 					<div className="msgDiv">
 						<div className="msgInputDiv">
 							<textarea className="msgInput" id="msg_text" value={props.msg_text} onChange={props.onChange} />
 						</div>
 						<div className="msgBtnDiv">
-							<button className="msgBtn" onClick={props.sendMsgEvent}> Send </button>
+							<span className="msgBtn" onClick={props.sendMsgEvent}><Icon>arrow_forward</Icon></span>
 						</div>
 					</div>
 				</div>
@@ -194,7 +209,7 @@ function ChatDetail(props) {
 }
 
 class VideoFeed extends React.Component{
-	constructor(props) { console.log(props);
+	constructor(props) {
 		super(props);
 		this.getProfile = this.getProfile.bind(this);
 		this.videoList = this.videoList.bind(this);
@@ -277,8 +292,8 @@ class VideoFeed extends React.Component{
 
 	}
 
-	showVideoEvent(event){
-		let data = {"show_video" : event.target.checked};
+	showVideoEvent(){
+		let data = {"show_video" : !this.state.show_video};
 		let req_data = {
 			route : '/ProfileSettings',
 			method : 'POST',
@@ -304,7 +319,6 @@ class VideoFeed extends React.Component{
 
 function AllVideo(props) {
 	let videos = "";
-	console.log(props);
 	if(props.video_list.length === 0){
 		videos = "No Video";
 	}else{
@@ -312,24 +326,31 @@ function AllVideo(props) {
 				return(
 					<div className="videoCont" key={video_obj.video_id}>
 						<span className="videoSpan">{video_obj.user_u_name}</span>
-						<video width="320" height="240" controls>
-					  		<source src={link+'/GetFile/'+video_obj.video_name} type="video/mp4" />
-					  		Your browser does not support the video tag.
-						</video>
+						<div className="videoPanel">
+							<video className="videoTag" width="320" height="240" controls>
+						  		<source src={link+'/GetFile/'+video_obj.video_name} type="video/mp4" />
+						  		Your browser does not support the video tag.
+							</video>
+						</div>
 					</div>
 					)});
 	}
 
+	let video_share = <span className="backBtn videoShare videoNot" title="Click To Share With All" onClick={props.showVideoEvent}><Icon>videocam_off</Icon></span>;
+
+	if(props.show_video)
+		video_share = <span className="backBtn videoShare videoYes" title="Click To Disable Sharing" onClick={props.showVideoEvent}><Icon>videocam</Icon></span>;
+
 	return (<div className="videoDiv">
-				<div className="videoInputDiv">
-					<input className="videoInput" type="file" ref={props.fileInput} onChange={props.uploadEvent} accept="video/*" />
-					<label className="container">Show Videos
-						<input type="checkbox" title="Show your videos to others" checked={props.show_video} onChange={props.showVideoEvent} />
-					  	<span className="checkmark"></span>
-					</label>
+				<div className="chatHead">
+					<h3 className="chatListH3">Videos</h3>
 				</div>
-				<div className="videoShowDiv">
+				<div className="chatListPanel">
 					{videos}
+				</div>
+				<div className="msgDiv videoInputDiv">
+					<input className="videoInput" type="file" ref={props.fileInput} onChange={props.uploadEvent} accept="video/*" />
+					{video_share}
 				</div>
 			</div>
 			);
@@ -340,3 +361,7 @@ export {
 	VideoFeed
 }
 				
+/*				<label className="container">Show Videos
+						<input type="checkbox" title="Show your videos to others" checked={props.show_video} onChange={props.showVideoEvent} />
+					  	<span className="checkmark"></span>
+					</label>*/

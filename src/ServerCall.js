@@ -12,8 +12,7 @@ var serverCall = (req_data)=>{
   if(req_data.headers === undefined){
     req_data.headers = {
                         'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Origin': 'http://localhost:3000'
+                        'Content-Type': 'application/json'
                       }
   }
   
