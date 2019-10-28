@@ -1,17 +1,4 @@
-// All Component
-import LogIn from './LogIn';
-import ServerErr from './ServerErr';
-import Registration from './Registration';
-import Main from './Main';
-import './App.css';
 import socketIOClient from "socket.io-client";
-
-const emochat_comp = {
-	ServerErr: ServerErr,
-	LogIn: LogIn,
-	Registration: Registration,
-	Chat: Main
-};
 
 // Server Link
 const link = 'https://emochatapi.herokuapp.com';
@@ -21,6 +8,5 @@ const socket = socketIOClient(link+'/');
 
 export {
 	link,
-	emochat_comp,
 	socket
 };

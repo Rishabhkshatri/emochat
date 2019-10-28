@@ -153,7 +153,6 @@ class Chat extends React.Component{
 
 function UserContent(props) {
 	let user_list = "";
-	let videos = "";
 	if(Object.keys(props.active_user).length === 0){
 		user_list = "No Active User";
 	}else{

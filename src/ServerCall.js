@@ -1,4 +1,4 @@
-import {link,emochat_comp} from './config';
+import {link} from './config';
 
 var serverCall = (req_data)=>{
   if(req_data.method === undefined){
@@ -19,7 +19,7 @@ var serverCall = (req_data)=>{
   if(req_data.headers['Content-Type'] === 'application/json'){
    req_data.body = JSON.stringify(req_data.body);
   }
-console.log('a');
+
   let req_con = {
       headers: req_data.headers, 
       redirect: 'follow',

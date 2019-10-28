@@ -1,6 +1,17 @@
 import React from 'react';
 import serverCall from './ServerCall';
-import {link,emochat_comp} from './config';
+import LogIn from './LogIn';
+import ServerErr from './ServerErr';
+import Registration from './Registration';
+import Main from './Main';
+import './App.css';
+
+const emochat_comp = {
+  ServerErr: ServerErr,
+  LogIn: LogIn,
+  Registration: Registration,
+  Chat: Main
+};
 
 class App extends React.Component {
   constructor(props){
